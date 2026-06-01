@@ -1,25 +1,12 @@
-# === STAGE 1: Build Aplikasi dengan Node.js ===
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Salin package.json dan install SEMUA dependensi (termasuk devDependencies untuk build)
-COPY package*.json ./
-RUN npm ci
-
-# Salin seluruh file source code ke /app
-COPY . .
-
-# Jalankan perintah build (menghasilkan folder dist atau build)
-RUN npm run build
-
-# === STAGE 2: Jalankan dengan Nginx ===
+# Gunakan base image Nginx versi Alpine yang sangat ringan
 FROM nginx:alpine
 
-# Salin hasil build dari stage 'builder' (sesuaikan 'dist' atau 'build' dengan framework Anda)
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Salin file static HTML, CSS, dan JS ke folder default Nginx
+COPY index.html /usr/share/nginx/html/
+COPY style.css /usr/share/nginx/html/
+COPY app.js /usr/share/nginx/html/
 
-# Expose port 80 (bawaan Nginx)
+# Informasikan port default Nginx (port 80)
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Nginx akan otomatis berjalan secara default, tidak perlu CMD khusus

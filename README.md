@@ -1,15 +1,15 @@
-# 🐳 Docker Learning Dashboard (VPS Deployment Guide)
+# 🐳 Docker Learning Dashboard (Static Nginx VPS)
 
-Panduan deployment dan pengujian aplikasi dashboard interaktif "Learn Docker" pada server VPS (Virtual Private Server) Anda yang telah terinstall Docker.
+Panduan deployment dan pengujian aplikasi dashboard interaktif "Learn Docker" versi **Static HTML/CSS/JS** menggunakan web server **Nginx** di VPS (Virtual Private Server) Anda.
 
 ---
 
 ## 🚀 Langkah 1: Transfer File Proyek ke VPS
 
-Pilih salah satu metode berikut untuk mengirimkan folder proyek ini (`learndocker`) ke VPS Anda:
+Kirim seluruh file di folder proyek ini (`learndocker`) ke VPS Anda:
 
 ### Opsi A: Menggunakan Git (Paling Direkomendasikan)
-1. Push project ini ke repository private/public Anda (misal GitHub/GitLab).
+1. Push project ini ke repository Anda (misal GitHub/GitLab).
 2. SSH ke VPS Anda:
    ```bash
    ssh username@ip_vps_anda
@@ -33,12 +33,12 @@ cd /home/username/learndocker
 
 ---
 
-## 📦 Langkah 2: Menjalankan Aplikasi di VPS dengan Docker
+## 📦 Langkah 2: Menjalankan Nginx Container di VPS
 
-Setelah masuk ke direktori proyek di VPS, jalankan aplikasi menggunakan salah satu cara berikut:
+Setelah masuk ke direktori proyek di VPS, jalankan container dengan salah satu metode berikut:
 
 ### Metode 1: Menggunakan Docker Compose (Sangat Mudah)
-Jalankan perintah ini untuk membangun image dan menjalankan kontainer di background:
+Jalankan perintah ini untuk membangun image static dan menjalankan kontainer di background:
 ```bash
 docker compose up -d
 ```
@@ -46,12 +46,13 @@ docker compose up -d
 ### Metode 2: Menggunakan Docker CLI (Standard)
 1. **Build image**:
    ```bash
-   docker build -t learndocker-app .
+   docker build -t learndocker-static .
    ```
 2. **Jalankan container**:
    ```bash
-   docker run -d -p 3000:3000 --restart unless-stopped --name docker-dashboard learndocker-app
+   docker run -d -p 3000:80 --restart unless-stopped --name docker-dashboard learndocker-static
    ```
+   > **Penjelasan**: Port `3000` di VPS akan dipetakan ke port `80` (port standar web server Nginx) di dalam container.
 
 ---
 
@@ -66,13 +67,13 @@ http://<IP_VPS_ANDA>:3000
 ### ⚠️ Troubleshooting (Jika Halaman Tidak Bisa Diakses):
 Jika halaman tidak dapat dibuka, kemungkinan besar port `3000` masih diblokir oleh firewall VPS Anda.
 
-1. **Jika VPS menggunakan UFW (Ubuntu/Debian)**, buka port 3000 dengan perintah berikut di VPS:
+1. **UFW Firewall (Ubuntu/Debian)**:
    ```bash
    sudo ufw allow 3000/tcp
    sudo ufw reload
    ```
-2. **Jika menggunakan Cloud Provider (AWS, Alibaba Cloud, GCP, DigitalOcean, dll.)**:
-   Pastikan Anda telah menambahkan **Security Group / Firewall Rule** baru di panel penyedia VPS untuk mengizinkan traffic masuk (Inbound Rule) ke **Port 3000** (TCP).
+2. **Security Group (Panel Cloud AWS/GCP/Alibaba/DigitalOcean)**:
+   Tambahkan **Inbound Rule** baru di panel manajemen VPS Anda untuk membuka **Port 3000** (TCP) untuk publik.
 
 ---
 
@@ -82,10 +83,10 @@ Jika halaman tidak dapat dibuka, kemungkinan besar port `3000` masih diblokir ol
   ```bash
   docker ps
   ```
-* **Melihat log aplikasi (untuk debugging)**:
+* **Melihat log aktivitas Nginx**:
   ```bash
   docker logs -f docker-learning-dashboard
   ```
-* **Menghentikan aplikasi**:
+* **Menghentikan kontainer**:
   * Jika menggunakan Docker Compose: `docker compose down`
   * Jika menggunakan Docker CLI: `docker stop docker-dashboard`

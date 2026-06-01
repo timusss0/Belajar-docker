@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  learning-dashboard:
+    build: .
+    container_name: docker-learning-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - APP_ENV=Docker_Compose_Environment
+      - LEARNING_MODE=Interactive_Cheatsheet
+    restart: unless-stopped

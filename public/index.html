@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Docker | Interactive Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glass-bg"></div>
+  
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="docker-icon">🐳</div>
+        <div class="brand">
+          <h1>LEARN DOCKER</h1>
+          <p>Interactive Environment & Command Center</p>
+        </div>
+      </div>
+      <div class="status-badge" id="conn-status">
+        <span class="dot pulse"></span> Connected to Server
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      
+      <!-- Container Info / Server Diagnostics (DOCKER INFO) -->
+      <section class="card stats-card col-span-3">
+        <div class="card-header">
+          <h3>🐳 Diagnostics Info Container</h3>
+          <span class="sub-text">Informasi real-time dari container yang sedang berjalan</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="label">Hostname (Container ID)</span>
+            <span class="value code" id="stat-hostname">Loading...</span>
+          </div>
+          <div class="stat-box">
+            <span class="label">Platform OS</span>
+            <span class="value" id="stat-os">Loading...</span>
+          </div>
+          <div class="stat-box">
+            <span class="label">Uptime Server</span>
+            <span class="value" id="stat-uptime">Loading...</span>
+          </div>
+          <div class="stat-box">
+            <span class="label">Penggunaan Memori</span>
+            <span class="value" id="stat-memory">Loading...</span>
+          </div>
+        </div>
+        <div class="env-vars-container">
+          <h4>Environment Variables di Container:</h4>
+          <div class="env-tags" id="env-tags">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Playground (SIMULATION OF DOCKER ENGINE) -->
+      <section class="card simulator-card col-span-2">
+        <div class="card-header">
+          <h3>🎮 Simulator Engine Docker</h3>
+          <span class="sub-text">Coba jalankan dan kelola container simulasi Anda</span>
+        </div>
+        
+        <div class="simulator-actions">
+          <button class="btn btn-primary" id="btn-run-sim">
+            <span class="icon">▶</span> Run Container Baru
+          </button>
+          <button class="btn btn-danger" id="btn-prune-sim">
+            <span class="icon">🗑</span> Prune Containers
+          </button>
+        </div>
+
+        <div class="container-list-wrapper">
+          <div class="list-header">
+            <span>Container Aktif (Simulasi)</span>
+            <span class="count-badge" id="container-count">0 Running</span>
+          </div>
+          <div class="container-list" id="simulated-containers-list">
+            <!-- Simulated containers injected here -->
+            <div class="empty-state">Tidak ada container yang berjalan. Klik 'Run Container Baru' untuk memulai!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Learning Path Checklist -->
+      <section class="card checklist-card col-span-1">
+        <div class="card-header">
+          <h3>📋 Misi Belajar Docker</h3>
+          <span class="sub-text">Selesaikan misi untuk menguasai Docker</span>
+        </div>
+        <div class="checklist-items">
+          <div class="check-item">
+            <input type="checkbox" id="task1">
+            <label for="task1">
+              <strong>1. Buat Dockerfile</strong>
+              <p>Mendefinisikan langkah pembuatan image aplikasi Node.js.</p>
+            </label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="task2">
+            <label for="task2">
+              <strong>2. Build Image Docker</strong>
+              <p>Membuat image lokal menggunakan perintah <code>docker build</code>.</p>
+            </label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="task3">
+            <label for="task3">
+              <strong>3. Run Container</strong>
+              <p>Menjalankan container dengan port forwarding (3000:3000).</p>
+            </label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="task4">
+            <label for="task4">
+              <strong>4. Gunakan Env Variables</strong>
+              <p>Mengatur variabel lingkungan via parameter <code>-e</code> saat run.</p>
+            </label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="task5">
+            <label for="task5">
+              <strong>5. Tulis Docker Compose</strong>
+              <p>Menyederhanakan orkestrasi startup container dengan docker-compose.</p>
+            </label>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-info">
+            <span>Progress Belajar</span>
+            <span id="progress-percentage">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker Cheat Sheet Commands -->
+      <section class="card cheatsheet-card col-span-3">
+        <div class="card-header">
+          <h3>💡 Cheatsheet Perintah Docker Esensial</h3>
+          <span class="sub-text">Klik perintah di bawah untuk melihat penjelasan detailnya</span>
+        </div>
+        <div class="commands-grid">
+          <div class="cmd-box" onclick="showExplanation('docker-build')">
+            <code class="cmd-text">docker build -t learndocker-app .</code>
+            <span class="cmd-desc">Build image dari Dockerfile</span>
+          </div>
+          <div class="cmd-box" onclick="showExplanation('docker-run')">
+            <code class="cmd-text">docker run -d -p 3000:3000 learndocker-app</code>
+            <span class="cmd-desc">Jalankan container di background dengan port mapping</span>
+          </div>
+          <div class="cmd-box" onclick="showExplanation('docker-ps')">
+            <code class="cmd-text">docker ps -a</code>
+            <span class="cmd-desc">Lihat semua container yang aktif & nonaktif</span>
+          </div>
+          <div class="cmd-box" onclick="showExplanation('docker-logs')">
+            <code class="cmd-text">docker logs -f &lt;container_id&gt;</code>
+            <span class="cmd-desc">Intip logs/keluaran dari aplikasi di container</span>
+          </div>
+          <div class="cmd-box" onclick="showExplanation('docker-stop')">
+            <code class="cmd-text">docker stop &lt;container_id&gt;</code>
+            <span class="cmd-desc">Hentikan container yang sedang berjalan</span>
+          </div>
+          <div class="cmd-box" onclick="showExplanation('docker-compose')">
+            <code class="cmd-text">docker compose up -d</code>
+            <span class="cmd-desc">Jalankan seluruh service sesuai docker-compose.yml</span>
+          </div>
+        </div>
+
+        <!-- Explanation Modal/Panel inside card -->
+        <div class="explanation-box" id="explanation-box">
+          <div class="explanation-placeholder">Klik salah satu perintah di atas untuk mempelajari parameter dan fungsinya.</div>
+          <div class="explanation-content hidden" id="explanation-content">
+            <h4 id="exp-title">Nama Perintah</h4>
+            <p id="exp-detail">Detail penjelasan perintah...</p>
+            <div class="exp-tips">
+              <strong>Tips Docker:</strong> <span id="exp-tip-text">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Dibuat dengan ❤️ untuk Membantu Belajar Docker. Buka panduan di <strong>README.md</strong> untuk memulai test Docker.</p>
+    </footer>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
